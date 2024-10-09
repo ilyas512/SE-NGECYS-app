@@ -72,58 +72,49 @@ male_specific_diseases = [
 ]
 
 # Ajouter des listes de maladies spécifiques par catégorie d'âge
-# Liste des maladies spécifiques aux nourrissons
 maladies_nourrisson = [
-
-    "Rougeole",  # Ajouté selon le document
-    "Coqueluche"  # Ajouté selon le document
+    "Rougeole", 
+    "Coqueluche"
 ]
 
-# Liste des maladies spécifiques aux enfants
 maladies_enfant = [
-
     "Hyperactivité et trouble de l’attention chez l’enfant",
     "Rhinopharyngite de l'enfant", 
     "Enurésie (pipi au lit)",
     "Troubles du sommeil chez l’enfant",
-    "Rhinopharyngite de l'enfant",
     "Diarrhée et gastro-entérite chez l'enfant", 
     "Constipation de bébé et de l'enfant", 
-    "Angine et mal de gorge de l’enfant",  # Ajouté selon le document
-    "Autisme et TED",  # Ajouté selon le document
-    "Dépression chez l’enfant et l’adolescent",  # Ajouté selon le document
-    "Douleur chez l’enfant",  # Ajouté selon le document
-    "Fièvre de l'enfant",  # Ajouté selon le document
-    "Mal de ventre chez l’enfant",  # Ajouté selon le document
-    "Nausées et vomissement de l'enfant",  # Ajouté selon le document
-    "Pneumonie",  # Ajouté selon le document
-    "Problèmes de peau chez les enfants"  # Ajouté selon le document
+    "Angine et mal de gorge de l’enfant", 
+    "Autisme et TED", 
+    "Dépression chez l’enfant et l’adolescent", 
+    "Douleur chez l’enfant", 
+    "Fièvre de l'enfant", 
+    "Mal de ventre chez l’enfant", 
+    "Nausées et vomissement de l'enfant", 
+    "Pneumonie", 
+    "Problèmes de peau chez les enfants"
 ]
 
-# Liste des maladies spécifiques aux adultes
 maladies_adulte = [
-
-    "Angine et mal de gorge de l’adulte",  # Ajouté selon le document
-    "Constipation de l'adulte",  # Ajouté selon le document
-    "Dépression de l'adulte",  # Ajouté selon le document
-    "Diarrhée et gastro-entérite de l'adulte",  # Ajouté selon le document
-    "Douleur chez l'adulte",  # Ajouté selon le document
-    "Enrouement de l'adulte",  # Ajouté selon le document
-    "Fièvre de l’adulte",  # Ajouté selon le document
-    "Mal de ventre chez l'adulte",  # Ajouté selon le document
-    "Nausées et vomissement de l'adulte",  # Ajouté selon le document
-    "Otite et douleur d’oreille de l'adulte",  # Ajouté selon le document
-    "Toux chez l'adulte"  # Ajouté selon le document
+    "Angine et mal de gorge de l’adulte", 
+    "Constipation de l'adulte", 
+    "Dépression de l'adulte", 
+    "Diarrhée et gastro-entérite de l'adulte", 
+    "Douleur chez l'adulte", 
+    "Enrouement de l'adulte", 
+    "Fièvre de l’adulte", 
+    "Mal de ventre chez l'adulte", 
+    "Nausées et vomissement de l'adulte", 
+    "Otite et douleur d’oreille de l'adulte", 
+    "Toux chez l'adulte"
 ]
 
-# Liste des maladies spécifiques aux personnes âgées
 maladies_personne_agee = [
-
     "Maladie d'Alzheimer", 
     "Troubles du rythme cardiaque",
-    "Dégénérescence maculaire (DMLA)",  # Ajouté selon le document
-    "Glaucome",  # Ajouté selon le document
-    "Accident vasculaire cérébral (AVC)"  # Ajouté selon le document
+    "Dégénérescence maculaire (DMLA)", 
+    "Glaucome", 
+    "Accident vasculaire cérébral (AVC)"
 ]
 
 # Fonction pour prédire la maladie en fonction des symptômes sélectionnés et du profil du patient
@@ -206,27 +197,29 @@ if st.button("Prédire la Maladie"):
         # Prédire la maladie en fonction des symptômes sélectionnés et du profil du patient
         prediction, diseases, similarities = predire_maladie(selected_symptoms, sex, age_category)
         
-        # Tracé du graphique interactif en camembert avec Plotly
-        fig = px.pie(
-            names=diseases,
-            values=similarities,
+        # Tracé du graphique interactif en histogramme coloré avec Plotly
+        fig = px.bar(
+            x=diseases,
+            y=similarities,
             title="Répartition des Maladies Probables",
-            hole=0.3
+            labels={'x': 'Maladies', 'y': 'Similarité (%)'},
+            color=diseases,  # Ajouter des couleurs différentes pour chaque maladie
+            color_discrete_sequence=px.colors.qualitative.Bold  # Choisir une palette de couleurs
         )
         
-        # Mettre à jour la mise en page pour retirer le fond et ajuster la visibilité des pourcentages
+        # Mettre à jour la mise en page pour ajuster l'apparence du graphique
         fig.update_layout(
-            showlegend=True, 
+            showlegend=False,
             paper_bgcolor='rgba(0,0,0,0)', 
-            plot_bgcolor='rgba(0,0,0,0)'
+            plot_bgcolor='rgba(0,0,0,0)',
+            xaxis_title="Maladies",
+            yaxis_title="Similarité (%)"
         )
         
-        # Améliorer le style du texte des pourcentages dans le graphique
+        # Améliorer le style des barres et du texte dans le graphique
         fig.update_traces(
-            textinfo='percent',  # Afficher uniquement le pourcentage
-            textfont=dict(size=20, color='white', family='Arial', weight='bold'),  # Texte grand, gras et visible
-            insidetextorientation='horizontal',  # Orienter le texte horizontalement
-            textposition='inside'  # Positionner le texte à l'intérieur des tranches
+            texttemplate='%{y:.2f}%',  # Afficher les pourcentages sur les barres
+            textposition='outside'  # Positionner le texte à l'extérieur des barres
         )
         
         # Afficher le graphique dans Streamlit
